@@ -1,71 +1,71 @@
 # Portly
 
-App Android para controlar el acceso a una privada: los residentes generan su QR para entrar y salir, y pueden crear QR temporales para sus invitados.
+Android app to control access to a gated community: residents generate their own QR code to enter and exit, and can create temporary QR codes for their guests.
 
-> Estado: funciones de la **etapa 8** completas (navegación y pantallas). Las funciones que dependen de un servidor siguen pendientes (ver abajo).
+> Status: **stage 8** features are complete (navigation and screens). Features that depend on a server are still pending (see below).
 
-## Capturas
+## Screenshots
 
-| Login | Mi QR | Invitados |
+| Login | My QR | Guests |
 |:-:|:-:|:-:|
-| ![Login](docs/capturas/01-login.png) | ![Mi QR](docs/capturas/02-mi-qr.png) | ![Invitados](docs/capturas/03-invitados.png) |
+| ![Login](docs/capturas/01-login.png) | ![My QR](docs/capturas/02-mi-qr.png) | ![Guests](docs/capturas/03-invitados.png) |
 
-| Crear invitado | QR de invitado | Historial |
+| Create guest | Guest QR | History |
 |:-:|:-:|:-:|
-| ![Crear invitado](docs/capturas/04-crear-invitado.png) | ![QR de invitado](docs/capturas/05-qr-invitado.png) | ![Historial](docs/capturas/06-historial.png) |
+| ![Create guest](docs/capturas/04-crear-invitado.png) | ![Guest QR](docs/capturas/05-qr-invitado.png) | ![History](docs/capturas/06-historial.png) |
 
-| Ajustes | Notificaciones de invitados | Administración |
+| Settings | Guest notifications | Administration |
 |:-:|:-:|:-:|
-| ![Ajustes](docs/capturas/07-ajustes.png) | ![Notificaciones](docs/capturas/08-notificaciones-invitados.png) | ![Administración](docs/capturas/09-administracion.png) |
+| ![Settings](docs/capturas/07-ajustes.png) | ![Guest notifications](docs/capturas/08-notificaciones-invitados.png) | ![Administration](docs/capturas/09-administracion.png) |
 
-| Residentes | Registro completo | QRs de invitados activos |
+| Residents | Full log | Active guest QRs |
 |:-:|:-:|:-:|
-| ![Residentes](docs/capturas/10-residentes.png) | ![Registro](docs/capturas/11-registro-completo.png) | ![QRs activos](docs/capturas/12-qrs-activos.png) |
+| ![Residents](docs/capturas/10-residentes.png) | ![Full log](docs/capturas/11-registro-completo.png) | ![Active guest QRs](docs/capturas/12-qrs-activos.png) |
 
-## Funciones
+## Features
 
-- **Login** con contacto (teléfono o correo) y contraseña. La contraseña se guarda con PBKDF2; la sesión se conserva en DataStore.
-- **Mi QR:** el código del residente para entrar y salir.
-- **Invitados:** el residente crea un invitado con su nombre y genera su QR. El QR solo vale el día en que se creó, sin límite de usos ese día. Se puede compartir la imagen por WhatsApp o cancelar.
-- **Historial:** cada entrada y salida con hora, persona y residente que invitó.
-- **Ajustes:** notificaciones por invitado y un interruptor general "Silenciar a todos los invitados" (aparece con 2 o más invitados y manda sobre los individuales).
-- **Administración** (solo para administradores): agregar, editar, activar o desactivar residentes; ver el registro completo con filtro por residente; y cancelar QR de invitados activos. Un residente nunca se borra, para conservar el historial.
-- **Idiomas:** español (por defecto) e inglés, según el idioma del teléfono.
+- **Login** with a contact (phone or email) and a password. Passwords are stored hashed with PBKDF2; the session is kept in DataStore.
+- **My QR:** the resident's own code to enter and exit.
+- **Guests:** a resident creates a guest by name and generates their QR. The QR is only valid on the day it was created, with no limit on uses that day. The image can be shared via WhatsApp, or the QR can be cancelled.
+- **History:** every entry and exit with time, person and the resident who invited them.
+- **Settings:** notifications per guest, plus a general "Mute all guests" switch (shown with 2 or more guests, and it overrides the individual ones).
+- **Administration** (administrators only): add, edit, activate or deactivate residents; view the full log filtered by resident; and cancel active guest QRs. A resident is never deleted, so the history is preserved.
+- **Languages:** Spanish (default) and English, following the phone's language.
 
-## Tecnología
+## Tech stack
 
-- Kotlin, Jetpack Compose y Material 3
-- Navigation Compose, ViewModel con Flow y Hilt
-- Room para la base de datos local
-- DataStore y Android Keystore para la sesión y los secretos
-- ZXing para generar los QR
-- Android 8.0 (API 26) o superior
+- Kotlin, Jetpack Compose and Material 3
+- Navigation Compose, ViewModel with Flow, and Hilt
+- Room for the local database
+- DataStore and Android Keystore for the session and secrets
+- ZXing to generate the QR codes
+- Android 8.0 (API 26) or higher
 
-## Arquitectura
+## Architecture
 
 ```
-ui/           pantallas Compose y ViewModel (una pantalla, un ViewModel)
-domain/       reglas de negocio y modelos (sin Android)
-data/         Room, DataStore, seguridad, generación de QR
-di/           módulos de Hilt
+ui/           Compose screens and ViewModels (one screen, one ViewModel)
+domain/       business rules and models (no Android dependencies)
+data/         Room, DataStore, security, QR generation
+di/           Hilt modules
 ```
 
-Los servicios de `domain/` (autenticación, QR, historial, notificaciones, administración) reciben sus dependencias por interfaz, así que se prueban en la JVM con fakes y MockK.
+The services in `domain/` (authentication, QR, history, notifications, administration) receive their dependencies through interfaces, so they are tested on the JVM with fakes and MockK.
 
-## Compilar y probar
+## Build and test
 
 ```bash
-./gradlew testDebugUnitTest   # tests unitarios
-./gradlew installDebug        # instalar en un dispositivo conectado
+./gradlew testDebugUnitTest   # unit tests
+./gradlew installDebug        # install on a connected device
 ```
 
-## Pendiente (requiere servidor)
+## Pending (requires a server)
 
-- Validación del QR en la computadora de la caseta.
-- Notificaciones reales "X entró" y "X salió" (FCM).
-- Respaldo de la lista de invitados, que hoy se pierde al cambiar de teléfono.
-- Definir el administrador inicial.
+- QR validation on the gatehouse computer.
+- Real "X entered" and "X left" notifications (FCM).
+- Backup of the guest list, which is currently lost when changing phones.
+- Define the initial administrator.
 
-## Plan de desarrollo
+## Development plan
 
-El plan por etapas está en [`app/PLAN.md`](app/PLAN.md).
+The stage-by-stage plan is in [`app/PLAN.md`](app/PLAN.md) (in Spanish).
