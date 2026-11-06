@@ -8,19 +8,19 @@ Android app to control access to a gated community: residents generate their own
 
 | Login | My QR | Guests |
 |:-:|:-:|:-:|
-| ![Login](docs/capturas/01-login.png) | ![My QR](docs/capturas/02-mi-qr.png) | ![Guests](docs/capturas/03-invitados.png) |
+| ![Login](docs/screenshots/01-login.png) | ![My QR](docs/screenshots/02-my-qr.png) | ![Guests](docs/screenshots/03-guests.png) |
 
 | Create guest | Guest QR | History |
 |:-:|:-:|:-:|
-| ![Create guest](docs/capturas/04-crear-invitado.png) | ![Guest QR](docs/capturas/05-qr-invitado.png) | ![History](docs/capturas/06-historial.png) |
+| ![Create guest](docs/screenshots/04-create-guest.png) | ![Guest QR](docs/screenshots/05-guest-qr.png) | ![History](docs/screenshots/06-history.png) |
 
 | Settings | Guest notifications | Administration |
 |:-:|:-:|:-:|
-| ![Settings](docs/capturas/07-ajustes.png) | ![Guest notifications](docs/capturas/08-notificaciones-invitados.png) | ![Administration](docs/capturas/09-administracion.png) |
+| ![Settings](docs/screenshots/07-settings.png) | ![Guest notifications](docs/screenshots/08-guest-notifications.png) | ![Administration](docs/screenshots/09-administration.png) |
 
 | Residents | Full log | Active guest QRs |
 |:-:|:-:|:-:|
-| ![Residents](docs/capturas/10-residentes.png) | ![Full log](docs/capturas/11-registro-completo.png) | ![Active guest QRs](docs/capturas/12-qrs-activos.png) |
+| ![Residents](docs/screenshots/10-residents.png) | ![Full log](docs/screenshots/11-full-log.png) | ![Active guest QRs](docs/screenshots/12-active-guest-qrs.png) |
 
 ## Features
 
