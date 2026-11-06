@@ -24,6 +24,9 @@ class ResidenteRepositorioRoom @Inject constructor(
 
     override suspend fun obtener(id: Long): Residente? = dao.obtenerPorId(id)?.aDominio()
 
+    override suspend fun obtenerPorContacto(contacto: String): Residente? =
+        dao.obtenerPorContacto(contacto)?.aDominio()
+
     override suspend fun agregar(residente: Residente): Long = dao.insertar(residente.aEntidad())
 
     override suspend fun actualizar(residente: Residente) = dao.actualizar(residente.aEntidad())

@@ -23,6 +23,9 @@ interface ResidenteRepositorio {
 
     suspend fun obtener(id: Long): Residente?
 
+    /** El residente con ese teléfono o correo (su usuario de login), o null. */
+    suspend fun obtenerPorContacto(contacto: String): Residente?
+
     /** Guarda un residente nuevo y devuelve el id que le asignó la base. */
     suspend fun agregar(residente: Residente): Long
 

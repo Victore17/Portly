@@ -24,6 +24,9 @@ interface ResidenteDao {
     @Query("SELECT * FROM residentes WHERE id = :id")
     suspend fun obtenerPorId(id: Long): ResidenteEntity?
 
+    @Query("SELECT * FROM residentes WHERE contacto = :contacto")
+    suspend fun obtenerPorContacto(contacto: String): ResidenteEntity?
+
     @Query("SELECT * FROM residentes WHERE id = :id")
     fun observarPorId(id: Long): Flow<ResidenteEntity?>
 
