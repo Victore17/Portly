@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -95,7 +96,7 @@ private fun Inicio(mostrarAdministracion: Boolean) {
                             selected = pestanaDe(rutaActual) == p.ruta,
                             onClick = { nav.irAPestana(p.ruta) },
                             icon = { Icon(iconoDe(p.ruta), contentDescription = null) },
-                            label = { Text(stringResource(p.etiquetaRes)) },
+                            label = { Text(stringResource(p.etiquetaRes), maxLines = 1, overflow = TextOverflow.Ellipsis) },
                         )
                     }
                 }
