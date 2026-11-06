@@ -38,12 +38,20 @@ android {
     }
     testOptions {
         unitTests.isReturnDefaultValues = true
+        // Robolectric necesita los recursos empaquetados para levantar un Context.
+        unitTests.isIncludeAndroidResources = true
     }
 }
 
 ksp {
-    // Room exportará aquí los esquemas cuando existan entidades (Etapa 1).
     arg("room.schemaLocation", "${projectDir}/schemas")
+}
+
+// Robolectric alcanza interioridades del JDK que Java 25 ya no exporta por
+// omisión (jdk.internal.access, usado al emular FileDescriptor). Sin esto los
+// tests de Room fallan al levantar el Context.
+tasks.withType<Test>().configureEach {
+    jvmArgs("--add-exports=java.base/jdk.internal.access=ALL-UNNAMED")
 }
 
 dependencies {
@@ -85,6 +93,7 @@ dependencies {
     testImplementation(libs.turbine)
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.room.testing)
+    testImplementation(libs.robolectric)
 
     // Tests instrumentados
     androidTestImplementation(platform(libs.androidx.compose.bom))

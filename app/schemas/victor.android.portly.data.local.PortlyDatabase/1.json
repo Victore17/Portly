@@ -1,0 +1,328 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "0577a68960964af1dbf8a928b49d2d14",
+    "entities": [
+      {
+        "tableName": "residentes",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nombre` TEXT NOT NULL, `domicilio` TEXT NOT NULL, `contacto` TEXT NOT NULL, `activo` INTEGER NOT NULL, `esAdmin` INTEGER NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombre",
+            "columnName": "nombre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "domicilio",
+            "columnName": "domicilio",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "contacto",
+            "columnName": "contacto",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "activo",
+            "columnName": "activo",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "esAdmin",
+            "columnName": "esAdmin",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_residentes_contacto",
+            "unique": true,
+            "columnNames": [
+              "contacto"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_residentes_contacto` ON `${TABLE_NAME}` (`contacto`)"
+          }
+        ]
+      },
+      {
+        "tableName": "invitados",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nombre` TEXT NOT NULL, `residenteId` INTEGER NOT NULL, `notificacionesSilenciadas` INTEGER NOT NULL, FOREIGN KEY(`residenteId`) REFERENCES `residentes`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombre",
+            "columnName": "nombre",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "residenteId",
+            "columnName": "residenteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notificacionesSilenciadas",
+            "columnName": "notificacionesSilenciadas",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_invitados_residenteId_nombre",
+            "unique": true,
+            "columnNames": [
+              "residenteId",
+              "nombre"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_invitados_residenteId_nombre` ON `${TABLE_NAME}` (`residenteId`, `nombre`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "residentes",
+            "onDelete": "RESTRICT",
+            "onUpdate": "RESTRICT",
+            "columns": [
+              "residenteId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "qr_invitados",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `invitadoId` INTEGER NOT NULL, `residenteId` INTEGER NOT NULL, `creadoEn` INTEGER NOT NULL, `cancelado` INTEGER NOT NULL, FOREIGN KEY(`invitadoId`) REFERENCES `invitados`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT , FOREIGN KEY(`residenteId`) REFERENCES `residentes`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "invitadoId",
+            "columnName": "invitadoId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "residenteId",
+            "columnName": "residenteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "creadoEn",
+            "columnName": "creadoEn",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "cancelado",
+            "columnName": "cancelado",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_qr_invitados_invitadoId",
+            "unique": false,
+            "columnNames": [
+              "invitadoId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_qr_invitados_invitadoId` ON `${TABLE_NAME}` (`invitadoId`)"
+          },
+          {
+            "name": "index_qr_invitados_residenteId",
+            "unique": false,
+            "columnNames": [
+              "residenteId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_qr_invitados_residenteId` ON `${TABLE_NAME}` (`residenteId`)"
+          },
+          {
+            "name": "index_qr_invitados_creadoEn",
+            "unique": false,
+            "columnNames": [
+              "creadoEn"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_qr_invitados_creadoEn` ON `${TABLE_NAME}` (`creadoEn`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "invitados",
+            "onDelete": "RESTRICT",
+            "onUpdate": "RESTRICT",
+            "columns": [
+              "invitadoId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "residentes",
+            "onDelete": "RESTRICT",
+            "onUpdate": "RESTRICT",
+            "columns": [
+              "residenteId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "registros_acceso",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `nombrePersona` TEXT NOT NULL, `tipo` TEXT NOT NULL, `momento` INTEGER NOT NULL, `residenteId` INTEGER NOT NULL, `invitadoId` INTEGER, FOREIGN KEY(`residenteId`) REFERENCES `residentes`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT , FOREIGN KEY(`invitadoId`) REFERENCES `invitados`(`id`) ON UPDATE RESTRICT ON DELETE RESTRICT )",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nombrePersona",
+            "columnName": "nombrePersona",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tipo",
+            "columnName": "tipo",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "momento",
+            "columnName": "momento",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "residenteId",
+            "columnName": "residenteId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "invitadoId",
+            "columnName": "invitadoId",
+            "affinity": "INTEGER"
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": true,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [
+          {
+            "name": "index_registros_acceso_residenteId",
+            "unique": false,
+            "columnNames": [
+              "residenteId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_registros_acceso_residenteId` ON `${TABLE_NAME}` (`residenteId`)"
+          },
+          {
+            "name": "index_registros_acceso_invitadoId",
+            "unique": false,
+            "columnNames": [
+              "invitadoId"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_registros_acceso_invitadoId` ON `${TABLE_NAME}` (`invitadoId`)"
+          },
+          {
+            "name": "index_registros_acceso_momento",
+            "unique": false,
+            "columnNames": [
+              "momento"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_registros_acceso_momento` ON `${TABLE_NAME}` (`momento`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "residentes",
+            "onDelete": "RESTRICT",
+            "onUpdate": "RESTRICT",
+            "columns": [
+              "residenteId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          },
+          {
+            "table": "invitados",
+            "onDelete": "RESTRICT",
+            "onUpdate": "RESTRICT",
+            "columns": [
+              "invitadoId"
+            ],
+            "referencedColumns": [
+              "id"
+            ]
+          }
+        ]
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '0577a68960964af1dbf8a928b49d2d14')"
+    ]
+  }
+}
