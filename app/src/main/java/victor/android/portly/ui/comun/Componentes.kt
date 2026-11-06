@@ -1,5 +1,8 @@
 package victor.android.portly.ui.comun
 
+import victor.android.portly.R
+import androidx.compose.ui.res.stringResource
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,9 +37,10 @@ private val formatoFechaHora: DateTimeFormatter =
 fun Instant.comoFechaHora(zona: ZoneId = ZoneId.systemDefault()): String =
     formatoFechaHora.format(atZone(zona))
 
-fun TipoAcceso.etiqueta(): String = when (this) {
-    TipoAcceso.ENTRADA -> "Entrada"
-    TipoAcceso.SALIDA -> "Salida"
+@StringRes
+fun TipoAcceso.etiquetaRes(): Int = when (this) {
+    TipoAcceso.ENTRADA -> R.string.acceso_entrada
+    TipoAcceso.SALIDA -> R.string.acceso_salida
 }
 
 @Composable
@@ -70,7 +74,7 @@ fun BarraSuperior(titulo: String, alVolver: (() -> Unit)? = null) {
         navigationIcon = {
             if (alVolver != null) {
                 IconButton(onClick = alVolver) {
-                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                    Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(R.string.volver))
                 }
             }
         },

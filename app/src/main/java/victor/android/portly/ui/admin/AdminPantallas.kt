@@ -1,5 +1,7 @@
 package victor.android.portly.ui.admin
 
+import victor.android.portly.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.foundation.lazy.LazyRow
+import victor.android.portly.domain.administracion.ResultadoAdmin
 import victor.android.portly.ui.comun.BarraSuperior
 import victor.android.portly.ui.comun.Cargando
 import victor.android.portly.ui.comun.EstadoVacio
@@ -48,25 +51,26 @@ import victor.android.portly.ui.historial.FilaRegistro
 
 @Composable
 fun AdminInicioPantalla(alResidentes: () -> Unit, alRegistro: () -> Unit, alQrs: () -> Unit) {
-    Scaffold(topBar = { BarraSuperior("Administración") }) { padding ->
+    Scaffold(topBar = { BarraSuperior(stringResource(R.string.admin_titulo)) }) { padding ->
         Column(Modifier.padding(padding)) {
-            ListItem(headlineContent = { Text("Residentes") }, supportingContent = { Text("Agregar, editar, activar o desactivar") },
+            ListItem(headlineContent = { Text(stringResource(R.string.admin_residentes)) }, supportingContent = { Text(stringResource(R.string.admin_residentes_detalle)) },
                 modifier = Modifier.clickable(onClick = alResidentes))
             HorizontalDivider()
-            ListItem(headlineContent = { Text("Registro completo") }, supportingContent = { Text("Entradas y salidas de toda la privada") },
+            ListItem(headlineContent = { Text(stringResource(R.string.admin_registro)) }, supportingContent = { Text(stringResource(R.string.admin_registro_detalle)) },
                 modifier = Modifier.clickable(onClick = alRegistro))
             HorizontalDivider()
-            ListItem(headlineContent = { Text("QRs de invitados activos") }, supportingContent = { Text("Vigentes hoy, de todos los residentes") },
+            ListItem(headlineContent = { Text(stringResource(R.string.admin_qrs)) }, supportingContent = { Text(stringResource(R.string.admin_qrs_detalle)) },
                 modifier = Modifier.clickable(onClick = alQrs))
         }
     }
 }
 
 @Composable
-private fun AvisoDeError(error: String?, alDescartar: () -> Unit, snackbar: SnackbarHostState) {
+private fun AvisoDeError(error: ResultadoAdmin?, alDescartar: () -> Unit, snackbar: SnackbarHostState) {
+    val texto = error?.mensajeRes()?.let { stringResource(it) }
     LaunchedEffect(error) {
-        if (error != null) {
-            snackbar.showSnackbar(error)
+        if (texto != null) {
+            snackbar.showSnackbar(texto)
             alDescartar()
         }
     }
@@ -84,20 +88,20 @@ fun ResidentesPantalla(
     val snackbar = remember { SnackbarHostState() }
     AvisoDeError(error, viewModel::descartarError, snackbar)
     Scaffold(
-        topBar = { BarraSuperior("Residentes", alVolver) },
+        topBar = { BarraSuperior(stringResource(R.string.admin_residentes), alVolver) },
         snackbarHost = { SnackbarHost(snackbar) },
         floatingActionButton = {
-            FloatingActionButton(onClick = alAgregar) { Icon(Icons.Default.Add, contentDescription = "Agregar residente") }
+            FloatingActionButton(onClick = alAgregar) { Icon(Icons.Default.Add, contentDescription = stringResource(R.string.form_agregar)) }
         },
     ) { padding ->
         when {
             estado.cargando -> Cargando(Modifier.padding(padding))
-            estado.residentes.isEmpty() -> EstadoVacio("No hay residentes", Modifier.padding(padding))
+            estado.residentes.isEmpty() -> EstadoVacio(stringResource(R.string.residentes_vacio), Modifier.padding(padding))
             else -> LazyColumn(Modifier.padding(padding)) {
                 items(estado.residentes, key = { it.id }) { r ->
                     ListItem(
-                        headlineContent = { Text(r.nombre + if (r.esAdmin) " (admin)" else "") },
-                        supportingContent = { Text("${r.domicilio} · ${r.contacto}" + if (!r.activo) " · Inactivo" else "") },
+                        headlineContent = { Text(if (r.esAdmin) stringResource(R.string.residente_nombre_admin, r.nombre) else r.nombre) },
+                        supportingContent = { Text(stringResource(if (r.activo) R.string.residente_detalle else R.string.residente_detalle_inactivo, r.domicilio, r.contacto)) },
                         trailingContent = { Switch(r.activo, onCheckedChange = { viewModel.cambiarActivo(r.id, it) }) },
                         modifier = Modifier.clickable { alEditar(r.id) },
                     )
@@ -114,7 +118,7 @@ fun FormularioResidentePantalla(
 ) {
     val e by viewModel.estado.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { viewModel.guardado.collect { alVolver() } }
-    Scaffold(topBar = { BarraSuperior(if (e.esEdicion) "Editar residente" else "Agregar residente", alVolver) }) { padding ->
+    Scaffold(topBar = { BarraSuperior(stringResource(if (e.esEdicion) R.string.form_editar else R.string.form_agregar), alVolver) }) { padding ->
         if (e.cargando) {
             Cargando(Modifier.padding(padding))
         } else {
@@ -122,12 +126,12 @@ fun FormularioResidentePantalla(
                 Modifier.padding(padding).padding(16.dp).verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                OutlinedTextField(e.nombre, viewModel::cambiarNombre, label = { Text("Nombre") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(e.domicilio, viewModel::cambiarDomicilio, label = { Text("Domicilio") }, singleLine = true, modifier = Modifier.fillMaxWidth())
-                OutlinedTextField(e.contacto, viewModel::cambiarContacto, label = { Text("Teléfono o correo") }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(e.nombre, viewModel::cambiarNombre, label = { Text(stringResource(R.string.form_nombre)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(e.domicilio, viewModel::cambiarDomicilio, label = { Text(stringResource(R.string.form_domicilio)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
+                OutlinedTextField(e.contacto, viewModel::cambiarContacto, label = { Text(stringResource(R.string.campo_contacto)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
                 if (!e.esEdicion) {
                     OutlinedTextField(
-                        e.contrasena, viewModel::cambiarContrasena, label = { Text("Contraseña inicial") }, singleLine = true,
+                        e.contrasena, viewModel::cambiarContrasena, label = { Text(stringResource(R.string.form_contrasena)) }, singleLine = true,
                         visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         modifier = Modifier.fillMaxWidth(),
@@ -135,10 +139,10 @@ fun FormularioResidentePantalla(
                 }
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                     Checkbox(e.esAdmin, onCheckedChange = viewModel::cambiarEsAdmin)
-                    Text("Es administrador")
+                    Text(stringResource(R.string.form_es_admin))
                 }
-                e.error?.let { Text(it, color = MaterialTheme.colorScheme.error) }
-                Button(onClick = viewModel::guardar, enabled = !e.guardando, modifier = Modifier.fillMaxWidth()) { Text("Guardar") }
+                e.error?.mensajeRes()?.let { Text(stringResource(it), color = MaterialTheme.colorScheme.error) }
+                Button(onClick = viewModel::guardar, enabled = !e.guardando, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.form_guardar)) }
             }
         }
     }
@@ -147,17 +151,17 @@ fun FormularioResidentePantalla(
 @Composable
 fun RegistroCompletoPantalla(alVolver: () -> Unit, viewModel: RegistroCompletoViewModel = hiltViewModel()) {
     val e by viewModel.estado.collectAsStateWithLifecycle()
-    Scaffold(topBar = { BarraSuperior("Registro completo", alVolver) }) { padding ->
+    Scaffold(topBar = { BarraSuperior(stringResource(R.string.admin_registro), alVolver) }) { padding ->
         Column(Modifier.padding(padding)) {
             LazyRow(contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                item { FilterChip(e.filtroResidenteId == null, { viewModel.filtrarPorResidente(null) }, label = { Text("Todos") }) }
+                item { FilterChip(e.filtroResidenteId == null, { viewModel.filtrarPorResidente(null) }, label = { Text(stringResource(R.string.registro_todos)) }) }
                 items(e.residentes, key = { it.id }) { r ->
                     FilterChip(e.filtroResidenteId == r.id, { viewModel.filtrarPorResidente(r.id) }, label = { Text(r.nombre) })
                 }
             }
             when {
                 e.cargando -> Cargando()
-                e.registros.isEmpty() -> EstadoVacio("No hay registros")
+                e.registros.isEmpty() -> EstadoVacio(stringResource(R.string.registro_vacio))
                 else -> LazyColumn { items(e.registros, key = { it.id }) { FilaRegistro(it) } }
             }
         }
@@ -170,16 +174,16 @@ fun QrsActivosAdminPantalla(alVolver: () -> Unit, viewModel: QrsActivosAdminView
     val error by viewModel.error.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
     AvisoDeError(error, viewModel::descartarError, snackbar)
-    Scaffold(topBar = { BarraSuperior("QRs de invitados activos", alVolver) }, snackbarHost = { SnackbarHost(snackbar) }) { padding ->
+    Scaffold(topBar = { BarraSuperior(stringResource(R.string.admin_qrs), alVolver) }, snackbarHost = { SnackbarHost(snackbar) }) { padding ->
         when {
             e.cargando -> Cargando(Modifier.padding(padding))
-            e.qrs.isEmpty() -> EstadoVacio("No hay QR de invitados vigentes hoy", Modifier.padding(padding))
+            e.qrs.isEmpty() -> EstadoVacio(stringResource(R.string.qrs_vacio), Modifier.padding(padding))
             else -> LazyColumn(Modifier.padding(padding)) {
                 items(e.qrs, key = { it.qr.id }) { a ->
                     ListItem(
                         headlineContent = { Text(a.invitado.nombre) },
-                        supportingContent = { Text("Invitado de ${a.residente.nombre} · ${a.qr.creadoEn.comoFechaHora()}") },
-                        trailingContent = { OutlinedButton(onClick = { viewModel.cancelar(a.qr.id) }) { Text("Cancelar") } },
+                        supportingContent = { Text(stringResource(R.string.qrs_detalle, a.residente.nombre, a.qr.creadoEn.comoFechaHora())) },
+                        trailingContent = { OutlinedButton(onClick = { viewModel.cancelar(a.qr.id) }) { Text(stringResource(R.string.qrs_cancelar)) } },
                     )
                 }
             }

@@ -1,5 +1,8 @@
 package victor.android.portly.ui.navegacion
 
+import androidx.annotation.StringRes
+import victor.android.portly.R
+
 /** Rutas de la app. Las pestañas de la barra inferior son las de [PESTANAS]. */
 object Rutas {
     const val MI_QR = "mi_qr"
@@ -19,13 +22,13 @@ object Rutas {
     fun formularioResidente(residenteId: Long) = "admin/residentes/$residenteId"
 }
 
-data class Pestana(val ruta: String, val etiqueta: String)
+data class Pestana(val ruta: String, @StringRes val etiquetaRes: Int)
 
 /** Pestañas visibles de la barra inferior; Administración solo para administradores. */
 fun pestanasVisibles(esAdmin: Boolean): List<Pestana> = buildList {
-    add(Pestana(Rutas.MI_QR, "Mi QR"))
-    add(Pestana(Rutas.INVITADOS, "Invitados"))
-    add(Pestana(Rutas.HISTORIAL, "Historial"))
-    add(Pestana(Rutas.AJUSTES, "Ajustes"))
-    if (esAdmin) add(Pestana(Rutas.ADMIN, "Administración"))
+    add(Pestana(Rutas.MI_QR, R.string.nav_mi_qr))
+    add(Pestana(Rutas.INVITADOS, R.string.invitados_titulo))
+    add(Pestana(Rutas.HISTORIAL, R.string.historial_titulo))
+    add(Pestana(Rutas.AJUSTES, R.string.ajustes_titulo))
+    if (esAdmin) add(Pestana(Rutas.ADMIN, R.string.admin_titulo))
 }

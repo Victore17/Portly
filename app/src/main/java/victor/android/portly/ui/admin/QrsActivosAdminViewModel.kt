@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import victor.android.portly.domain.administracion.QrActivoAdmin
+import victor.android.portly.domain.administracion.ResultadoAdmin
 import victor.android.portly.domain.administracion.ServicioAdministracion
 import javax.inject.Inject
 
@@ -28,11 +29,11 @@ class QrsActivosAdminViewModel @Inject constructor(
         .map { QrsActivosAdminUiState(cargando = false, qrs = it) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), QrsActivosAdminUiState())
 
-    private val _error = MutableStateFlow<String?>(null)
-    val error: StateFlow<String?> = _error.asStateFlow()
+    private val _error = MutableStateFlow<ResultadoAdmin?>(null)
+    val error: StateFlow<ResultadoAdmin?> = _error.asStateFlow()
 
     fun cancelar(qrId: Long) {
-        viewModelScope.launch { _error.value = administracion.cancelarQr(qrId).mensajeDeError() }
+        viewModelScope.launch { _error.value = administracion.cancelarQr(qrId).comoError() }
     }
 
     fun descartarError() { _error.value = null }

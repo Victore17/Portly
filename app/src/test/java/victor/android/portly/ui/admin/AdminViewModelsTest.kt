@@ -56,7 +56,7 @@ class AdminViewModelsTest {
         coEvery { admin.cambiarActivo(1, false) } returns ResultadoAdmin.UltimoAdministrador
         val vm = ResidentesViewModel(admin)
         vm.cambiarActivo(1, false)
-        assertEquals("Debe quedar al menos un administrador activo", vm.error.value)
+        assertEquals(ResultadoAdmin.UltimoAdministrador, vm.error.value)
         vm.descartarError()
         assertNull(vm.error.value)
     }
@@ -112,7 +112,7 @@ class AdminViewModelsTest {
         coEvery { admin.agregarResidente(any(), any(), any(), any(), any()) } returns ResultadoAdmin.ContactoDuplicado
         val vm = formulario()
         vm.guardar()
-        assertEquals("Ya existe un residente con ese contacto", vm.estado.value.error)
+        assertEquals(ResultadoAdmin.ContactoDuplicado, vm.estado.value.error)
         assertEquals(false, vm.estado.value.guardando)
     }
 
@@ -131,7 +131,7 @@ class AdminViewModelsTest {
     fun formulario_editar_residente_inexistente_muestra_error() {
         val repo = mockk<ResidenteRepositorio>()
         coEvery { repo.obtener(8) } returns null
-        assertEquals("El residente ya no existe", formulario(8, repo).estado.value.error)
+        assertEquals(ResultadoAdmin.NoExiste, formulario(8, repo).estado.value.error)
     }
 
     // ---- Registro completo ----
@@ -173,6 +173,6 @@ class AdminViewModelsTest {
         assertEquals(listOf(qrAdmin), vm.estado.value.qrs)
         vm.cancelar(9)
         coVerify { admin.cancelarQr(9) }
-        assertEquals("No tienes permiso de administrador", vm.error.value)
+        assertEquals(ResultadoAdmin.NoAutorizado, vm.error.value)
     }
 }

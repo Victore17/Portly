@@ -1,5 +1,7 @@
 package victor.android.portly.ui.ajustes
 
+import victor.android.portly.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -23,16 +25,16 @@ import victor.android.portly.ui.comun.EstadoVacio
 
 @Composable
 fun AjustesPantalla(alAbrirNotificaciones: () -> Unit, viewModel: AjustesViewModel = hiltViewModel()) {
-    Scaffold(topBar = { BarraSuperior("Ajustes") }) { padding ->
+    Scaffold(topBar = { BarraSuperior(stringResource(R.string.ajustes_titulo)) }) { padding ->
         androidx.compose.foundation.layout.Column(Modifier.padding(padding)) {
             ListItem(
-                headlineContent = { Text("Notificaciones de invitados") },
-                supportingContent = { Text("Elige de quién quieres recibir avisos") },
+                headlineContent = { Text(stringResource(R.string.ajustes_notificaciones)) },
+                supportingContent = { Text(stringResource(R.string.ajustes_notificaciones_detalle)) },
                 modifier = Modifier.clickable(onClick = alAbrirNotificaciones),
             )
             HorizontalDivider()
             ListItem(
-                headlineContent = { Text("Cerrar sesión") },
+                headlineContent = { Text(stringResource(R.string.ajustes_cerrar_sesion)) },
                 modifier = Modifier.clickable(onClick = viewModel::cerrarSesion),
             )
         }
@@ -47,24 +49,25 @@ fun NotificacionesInvitadosPantalla(
     val ajustes by viewModel.ajustes.collectAsStateWithLifecycle()
     val error by viewModel.error.collectAsStateWithLifecycle()
     val snackbar = remember { SnackbarHostState() }
+    val textoError = stringResource(R.string.ajustes_error_guardar)
     LaunchedEffect(error) {
         if (error) {
-            snackbar.showSnackbar("No se pudo guardar el cambio")
+            snackbar.showSnackbar(textoError)
             viewModel.descartarError()
         }
     }
     Scaffold(
-        topBar = { BarraSuperior("Notificaciones de invitados", alVolver) },
+        topBar = { BarraSuperior(stringResource(R.string.ajustes_notificaciones), alVolver) },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
         if (ajustes.invitados.isEmpty()) {
-            EstadoVacio("Todavía no tienes invitados guardados", Modifier.padding(padding))
+            EstadoVacio(stringResource(R.string.ajustes_sin_invitados), Modifier.padding(padding))
         } else {
             LazyColumn(Modifier.padding(padding)) {
                 if (ajustes.mostrarSilenciarTodos) {
                     item {
                         ListItem(
-                            headlineContent = { Text("Silenciar a todos los invitados") },
+                            headlineContent = { Text(stringResource(R.string.ajustes_silenciar_todos)) },
                             trailingContent = {
                                 Switch(ajustes.silenciarTodos, onCheckedChange = viewModel::cambiarSilenciarTodos)
                             },
@@ -76,7 +79,7 @@ fun NotificacionesInvitadosPantalla(
                     ListItem(
                         headlineContent = { Text(a.invitado.nombre) },
                         supportingContent = {
-                            Text(if (ajustes.silenciarTodos && ajustes.mostrarSilenciarTodos) "Silenciado por el interruptor general" else "Silenciar notificaciones")
+                            Text(stringResource(if (ajustes.silenciarTodos && ajustes.mostrarSilenciarTodos) R.string.ajustes_silenciado_general else R.string.ajustes_silenciar))
                         },
                         trailingContent = {
                             Switch(

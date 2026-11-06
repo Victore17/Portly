@@ -28,7 +28,7 @@ data class FormularioResidenteUiState(
     val contrasena: String = "",
     val esAdmin: Boolean = false,
     val guardando: Boolean = false,
-    val error: String? = null,
+    val error: ResultadoAdmin? = null,
 )
 
 @HiltViewModel
@@ -55,7 +55,7 @@ class FormularioResidenteViewModel @Inject constructor(
                 original = r
                 _estado.update {
                     if (r == null) {
-                        it.copy(cargando = false, error = ResultadoAdmin.NoExiste.mensajeDeError())
+                        it.copy(cargando = false, error = ResultadoAdmin.NoExiste)
                     } else {
                         it.copy(
                             cargando = false,
@@ -91,7 +91,7 @@ class FormularioResidenteViewModel @Inject constructor(
             } else {
                 administracion.agregarResidente(e.nombre, e.domicilio, e.contacto, e.contrasena, e.esAdmin)
             }
-            val error = resultado.mensajeDeError()
+            val error = resultado.comoError()
             _estado.update { it.copy(guardando = false, error = error) }
             if (error == null) _guardado.send(Unit)
         }

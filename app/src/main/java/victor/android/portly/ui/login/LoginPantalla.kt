@@ -1,5 +1,7 @@
 package victor.android.portly.ui.login
 
+import victor.android.portly.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,13 +25,13 @@ import victor.android.portly.ui.comun.ColumnaCentrada
 fun LoginPantalla(viewModel: LoginViewModel = hiltViewModel()) {
     val estado by viewModel.estado.collectAsStateWithLifecycle()
     ColumnaCentrada {
-        Text("Portly", style = MaterialTheme.typography.displaySmall)
-        Text("Acceso a tu privada", style = MaterialTheme.typography.bodyLarge)
+        Text(stringResource(R.string.app_name), style = MaterialTheme.typography.displaySmall)
+        Text(stringResource(R.string.login_subtitulo), style = MaterialTheme.typography.bodyLarge)
         Spacer(Modifier.height(8.dp))
         OutlinedTextField(
             value = estado.contacto,
             onValueChange = viewModel::cambiarContacto,
-            label = { Text("Teléfono o correo") },
+            label = { Text(stringResource(R.string.campo_contacto)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth(),
@@ -37,7 +39,7 @@ fun LoginPantalla(viewModel: LoginViewModel = hiltViewModel()) {
         OutlinedTextField(
             value = estado.contrasena,
             onValueChange = viewModel::cambiarContrasena,
-            label = { Text("Contraseña") },
+            label = { Text(stringResource(R.string.campo_contrasena)) },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -46,15 +48,15 @@ fun LoginPantalla(viewModel: LoginViewModel = hiltViewModel()) {
         estado.error?.let {
             Text(
                 when (it) {
-                    ErrorLogin.CAMPOS_VACIOS -> "Escribe tu contacto y contraseña"
-                    ErrorLogin.CREDENCIALES_INVALIDAS -> "Contacto o contraseña incorrectos"
-                    ErrorLogin.RESIDENTE_INACTIVO -> "Tu cuenta está desactivada. Habla con el administrador"
+                    ErrorLogin.CAMPOS_VACIOS -> stringResource(R.string.login_error_campos_vacios)
+                    ErrorLogin.CREDENCIALES_INVALIDAS -> stringResource(R.string.login_error_credenciales)
+                    ErrorLogin.RESIDENTE_INACTIVO -> stringResource(R.string.login_error_inactivo)
                 },
                 color = MaterialTheme.colorScheme.error,
             )
         }
         Button(onClick = viewModel::iniciarSesion, enabled = !estado.cargando, modifier = Modifier.fillMaxWidth()) {
-            if (estado.cargando) CircularProgressIndicator(Modifier.height(20.dp)) else Text("Entrar")
+            if (estado.cargando) CircularProgressIndicator(Modifier.height(20.dp)) else Text(stringResource(R.string.login_entrar))
         }
     }
 }

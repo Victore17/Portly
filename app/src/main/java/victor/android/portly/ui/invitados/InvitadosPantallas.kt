@@ -1,5 +1,7 @@
 package victor.android.portly.ui.invitados
 
+import victor.android.portly.R
+import androidx.compose.ui.res.stringResource
 import android.content.ActivityNotFoundException
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -47,20 +49,20 @@ fun InvitadosPantalla(
 ) {
     val estado by viewModel.estado.collectAsStateWithLifecycle()
     Scaffold(
-        topBar = { BarraSuperior("Invitados") },
+        topBar = { BarraSuperior(stringResource(R.string.invitados_titulo)) },
         floatingActionButton = {
-            FloatingActionButton(onClick = alCrear) { Icon(Icons.Default.Add, contentDescription = "Crear invitado") }
+            FloatingActionButton(onClick = alCrear) { Icon(Icons.Default.Add, contentDescription = stringResource(R.string.crear_titulo)) }
         },
     ) { padding ->
         when {
             estado.cargando -> Cargando(Modifier.padding(padding))
             estado.activos.isEmpty() ->
-                EstadoVacio("No tienes QR de invitados vigentes hoy.\nToca + para crear uno", Modifier.padding(padding))
+                EstadoVacio(stringResource(R.string.invitados_vacio), Modifier.padding(padding))
             else -> LazyColumn(Modifier.padding(padding).fillMaxSize()) {
                 items(estado.activos, key = { it.qr.id }) { activo ->
                     ListItem(
                         headlineContent = { Text(activo.invitado.nombre) },
-                        supportingContent = { Text("Creado ${activo.qr.creadoEn.comoFechaHora()}") },
+                        supportingContent = { Text(stringResource(R.string.invitados_creado, activo.qr.creadoEn.comoFechaHora())) },
                         modifier = Modifier.clickable { alAbrirQr(activo.qr.id) },
                     )
                 }
@@ -80,12 +82,12 @@ fun CrearInvitadoPantalla(
     val guardados by viewModel.guardados.collectAsStateWithLifecycle()
     LaunchedEffect(Unit) { viewModel.qrCreado.collect(alCrearQr) }
 
-    Scaffold(topBar = { BarraSuperior("Crear invitado", alVolver) }) { padding ->
+    Scaffold(topBar = { BarraSuperior(stringResource(R.string.crear_titulo), alVolver) }) { padding ->
         Column(Modifier.padding(padding).padding(16.dp), verticalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)) {
             OutlinedTextField(
                 value = estado.nombre,
                 onValueChange = viewModel::cambiarNombre,
-                label = { Text("Nombre del invitado") },
+                label = { Text(stringResource(R.string.crear_nombre)) },
                 singleLine = true,
                 isError = estado.error != null,
                 modifier = Modifier.fillMaxWidth(),
@@ -93,14 +95,14 @@ fun CrearInvitadoPantalla(
             estado.error?.let {
                 Text(
                     when (it) {
-                        ErrorCrearInvitado.NOMBRE_VACIO -> "Escribe el nombre del invitado"
-                        ErrorCrearInvitado.RESIDENTE_NO_DISPONIBLE -> "Tu cuenta no puede crear invitados"
+                        ErrorCrearInvitado.NOMBRE_VACIO -> stringResource(R.string.crear_error_nombre)
+                        ErrorCrearInvitado.RESIDENTE_NO_DISPONIBLE -> stringResource(R.string.crear_error_residente)
                     },
                     color = MaterialTheme.colorScheme.error,
                 )
             }
             if (guardados.isNotEmpty()) {
-                Text("Invitados guardados", style = MaterialTheme.typography.titleSmall)
+                Text(stringResource(R.string.crear_guardados), style = MaterialTheme.typography.titleSmall)
                 androidx.compose.foundation.layout.FlowRow(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(8.dp)) {
                     guardados.forEach { nombre ->
                         AssistChip(onClick = { viewModel.cambiarNombre(nombre) }, label = { Text(nombre) })
@@ -108,7 +110,7 @@ fun CrearInvitadoPantalla(
                 }
             }
             Button(onClick = viewModel::crear, enabled = !estado.creando, modifier = Modifier.fillMaxWidth()) {
-                Text("Generar QR")
+                Text(stringResource(R.string.crear_generar))
             }
         }
     }
@@ -118,18 +120,19 @@ fun CrearInvitadoPantalla(
 fun DetalleQrPantalla(alVolver: () -> Unit, viewModel: DetalleQrViewModel = hiltViewModel()) {
     val estado by viewModel.estado.collectAsStateWithLifecycle()
     val contexto = LocalContext.current
+    val textoSelector = stringResource(R.string.detalle_compartir_selector)
     LaunchedEffect(Unit) { viewModel.cancelado.collect { alVolver() } }
 
-    Scaffold(topBar = { BarraSuperior("QR de invitado", alVolver) }) { padding ->
+    Scaffold(topBar = { BarraSuperior(stringResource(R.string.detalle_titulo), alVolver) }) { padding ->
         when (val e = estado) {
             DetalleQrUiState.Cargando -> Cargando(Modifier.padding(padding))
             DetalleQrUiState.NoVigente ->
-                EstadoVacio("Este QR ya no está vigente. Los QR de invitado valen solo el día en que se crean", Modifier.padding(padding))
+                EstadoVacio(stringResource(R.string.detalle_no_vigente), Modifier.padding(padding))
             is DetalleQrUiState.Listo -> {
                 val imagen = remember(e.contenido) { viewModel.imagen(e.contenido, 768).asImageBitmap() }
                 ColumnaCentrada(Modifier.padding(padding)) {
                     Text(e.nombreInvitado, style = MaterialTheme.typography.titleLarge)
-                    Image(imagen, contentDescription = "QR de ${e.nombreInvitado}", modifier = Modifier.size(260.dp))
+                    Image(imagen, contentDescription = stringResource(R.string.detalle_qr_de, e.nombreInvitado), modifier = Modifier.size(260.dp))
                     Button(
                         onClick = {
                             val whatsapp = viewModel.intentCompartir(768, soloWhatsapp = true)
@@ -138,14 +141,14 @@ fun DetalleQrPantalla(alVolver: () -> Unit, viewModel: DetalleQrViewModel = hilt
                             } catch (_: ActivityNotFoundException) {
                                 // Sin WhatsApp instalado, se ofrece cualquier otra app.
                                 viewModel.intentCompartir(768, soloWhatsapp = false)?.let {
-                                    contexto.startActivity(android.content.Intent.createChooser(it, "Compartir QR"))
+                                    contexto.startActivity(android.content.Intent.createChooser(it, textoSelector))
                                 }
                             }
                         },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text("Compartir por WhatsApp") }
+                    ) { Text(stringResource(R.string.detalle_compartir_whatsapp)) }
                     OutlinedButton(onClick = viewModel::cancelar, modifier = Modifier.fillMaxWidth()) {
-                        Text("Cancelar QR")
+                        Text(stringResource(R.string.detalle_cancelar))
                     }
                 }
             }

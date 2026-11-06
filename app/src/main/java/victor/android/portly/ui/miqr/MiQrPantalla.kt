@@ -1,5 +1,7 @@
 package victor.android.portly.ui.miqr
 
+import victor.android.portly.R
+import androidx.compose.ui.res.stringResource
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -20,12 +22,12 @@ fun MiQrPantalla(viewModel: MiQrViewModel = hiltViewModel()) {
     val estado by viewModel.estado.collectAsStateWithLifecycle()
     when (val e = estado) {
         MiQrUiState.Cargando -> Cargando()
-        MiQrUiState.NoDisponible -> EstadoVacio("No se pudo generar tu QR. Habla con el administrador")
+        MiQrUiState.NoDisponible -> EstadoVacio(stringResource(R.string.miqr_no_disponible))
         is MiQrUiState.Listo -> {
             val imagen = remember(e.contenido) { viewModel.imagen(e.contenido, 768).asImageBitmap() }
             ColumnaCentrada {
-                Image(imagen, contentDescription = "Tu código QR de acceso", modifier = Modifier.size(280.dp))
-                Text("Muéstralo en el lector para entrar o salir")
+                Image(imagen, contentDescription = stringResource(R.string.miqr_descripcion), modifier = Modifier.size(280.dp))
+                Text(stringResource(R.string.miqr_instruccion))
             }
         }
     }
