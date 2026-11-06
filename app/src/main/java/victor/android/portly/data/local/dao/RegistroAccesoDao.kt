@@ -24,6 +24,10 @@ interface RegistroAccesoDao {
     @Query("SELECT * FROM registros_acceso WHERE residenteId = :residenteId ORDER BY momento DESC, id DESC")
     fun observarPorResidente(residenteId: Long): Flow<List<RegistroAccesoEntity>>
 
+    /** Todos los registros de la privada, del más reciente al más antiguo. */
+    @Query("SELECT * FROM registros_acceso ORDER BY momento DESC, id DESC")
+    fun observarTodos(): Flow<List<RegistroAccesoEntity>>
+
     /** [desde] incluido, [hasta] excluido. */
     @Query(
         """

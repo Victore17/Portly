@@ -17,6 +17,9 @@ class RegistroAccesoRepositorioRoom @Inject constructor(
     override fun observarPorResidente(residenteId: Long): Flow<List<RegistroAcceso>> =
         dao.observarPorResidente(residenteId).map { lista -> lista.map { it.aDominio() } }
 
+    override fun observarTodos(): Flow<List<RegistroAcceso>> =
+        dao.observarTodos().map { lista -> lista.map { it.aDominio() } }
+
     override fun observarPorResidenteEnRango(
         residenteId: Long,
         desde: Instant,

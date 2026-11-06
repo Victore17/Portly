@@ -45,7 +45,7 @@ Nunca marcar una etapa como completada con tests fallando u omitidos.
 - [x] Etapa 4: Invitados y sus QR
 - [x] Etapa 5: Historial de accesos
 - [x] Etapa 6: Ajustes de notificaciones
-- [ ] Etapa 7: Administración
+- [x] Etapa 7: Administración
 - [ ] Etapa 8: Navegación, pantallas y pulido final
 
 ---

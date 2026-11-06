@@ -16,6 +16,9 @@ class QrInvitadoRepositorioRoom @Inject constructor(
     override fun observarPorResidente(residenteId: Long): Flow<List<QrInvitado>> =
         dao.observarPorResidente(residenteId).map { lista -> lista.map { it.aDominio() } }
 
+    override fun observarTodos(): Flow<List<QrInvitado>> =
+        dao.observarTodos().map { lista -> lista.map { it.aDominio() } }
+
     override fun observarPorInvitado(invitadoId: Long): Flow<List<QrInvitado>> =
         dao.observarPorInvitado(invitadoId).map { lista -> lista.map { it.aDominio() } }
 

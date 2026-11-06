@@ -9,6 +9,9 @@ interface QrInvitadoRepositorio {
     /** QR de un residente, del más reciente al más antiguo. */
     fun observarPorResidente(residenteId: Long): Flow<List<QrInvitado>>
 
+    /** QR de todos los residentes, del más reciente al más antiguo. */
+    fun observarTodos(): Flow<List<QrInvitado>>
+
     /** QR de un invitado en particular, del más reciente al más antiguo. */
     fun observarPorInvitado(invitadoId: Long): Flow<List<QrInvitado>>
 

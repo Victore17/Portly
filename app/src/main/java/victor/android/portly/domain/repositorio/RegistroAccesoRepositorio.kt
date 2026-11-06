@@ -17,6 +17,9 @@ interface RegistroAccesoRepositorio {
      */
     fun observarPorResidente(residenteId: Long): Flow<List<RegistroAcceso>>
 
+    /** Registro completo de la privada, del más reciente al más antiguo. */
+    fun observarTodos(): Flow<List<RegistroAcceso>>
+
     /**
      * Lo mismo, pero limitado a un rango de tiempo.
      *

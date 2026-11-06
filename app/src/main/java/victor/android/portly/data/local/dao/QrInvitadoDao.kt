@@ -22,6 +22,9 @@ interface QrInvitadoDao {
     @Query("SELECT * FROM qr_invitados WHERE residenteId = :residenteId ORDER BY creadoEn DESC, id DESC")
     fun observarPorResidente(residenteId: Long): Flow<List<QrInvitadoEntity>>
 
+    @Query("SELECT * FROM qr_invitados ORDER BY creadoEn DESC, id DESC")
+    fun observarTodos(): Flow<List<QrInvitadoEntity>>
+
     @Query("SELECT * FROM qr_invitados WHERE invitadoId = :invitadoId ORDER BY creadoEn DESC, id DESC")
     fun observarPorInvitado(invitadoId: Long): Flow<List<QrInvitadoEntity>>
 
