@@ -24,6 +24,7 @@ import victor.android.portly.domain.repositorio.CredencialRepositorio
 import victor.android.portly.domain.repositorio.SesionRepositorio
 import victor.android.portly.domain.seguridad.HasheadorContrasena
 import java.io.File
+import java.time.Clock
 import javax.inject.Singleton
 
 /** Dependencias de login y sesión. */
@@ -62,4 +63,8 @@ object AutenticacionProvidesModule {
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
             produceFile = { File(contexto.filesDir, "datastore/sesion.preferences_pb") },
         )
+
+    @Provides
+    @Singleton
+    fun proveerReloj(): Clock = Clock.systemDefaultZone()
 }

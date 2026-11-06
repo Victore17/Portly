@@ -42,7 +42,7 @@ Nunca marcar una etapa como completada con tests fallando u omitidos.
 - [x] Etapa 1: Modelo de datos y repositorios (Room)
 - [x] Etapa 2: Login y sesión
 - [x] Etapa 3: Generador de QR y QR del residente
-- [ ] Etapa 4: Invitados y sus QR
+- [x] Etapa 4: Invitados y sus QR
 - [ ] Etapa 5: Historial de accesos
 - [ ] Etapa 6: Ajustes de notificaciones
 - [ ] Etapa 7: Administración

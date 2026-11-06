@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Solo la carpeta donde se guardan las imágenes de QR a compartir. -->
+    <cache-path name="qr_compartidos" path="qr/" />
+</paths>
