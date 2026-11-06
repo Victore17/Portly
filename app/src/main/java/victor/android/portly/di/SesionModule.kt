@@ -13,11 +13,13 @@ import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import victor.android.portly.data.qr.SecretoQrDataStore
 import victor.android.portly.data.repositorio.CredencialRepositorioRoom
 import victor.android.portly.data.seguridad.Cifrador
 import victor.android.portly.data.seguridad.CifradorAesGcm
 import victor.android.portly.data.seguridad.HasheadorPbkdf2
 import victor.android.portly.data.sesion.SesionRepositorioDataStore
+import victor.android.portly.domain.qr.ProveedorSecretoQr
 import victor.android.portly.domain.repositorio.CredencialRepositorio
 import victor.android.portly.domain.repositorio.SesionRepositorio
 import victor.android.portly.domain.seguridad.HasheadorContrasena
@@ -36,6 +38,10 @@ abstract class AutenticacionBindsModule {
     @Binds
     @Singleton
     abstract fun ligarSesionRepositorio(impl: SesionRepositorioDataStore): SesionRepositorio
+
+    @Binds
+    @Singleton
+    abstract fun ligarSecretoQr(impl: SecretoQrDataStore): ProveedorSecretoQr
 
     @Binds
     abstract fun ligarHasheador(impl: HasheadorPbkdf2): HasheadorContrasena
