@@ -46,7 +46,7 @@ Nunca marcar una etapa como completada con tests fallando u omitidos.
 - [x] Etapa 5: Historial de accesos
 - [x] Etapa 6: Ajustes de notificaciones
 - [x] Etapa 7: Administración
-- [ ] Etapa 8: Navegación, pantallas y pulido final
+- [x] Etapa 8: Navegación, pantallas y pulido final
 
 ---
 
